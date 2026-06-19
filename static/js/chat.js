@@ -238,7 +238,7 @@ import { wireArrowUpRecall, getLastUserMessageFromChatHistory } from './composer
         submitBtn.classList.add('anim-land');
         submitBtn.addEventListener('animationend', () => submitBtn.classList.remove('anim-land'), { once: true });
       }, 300);
-      submitBtn.title = 'Stop generation';
+      submitBtn.title = window.__('Stop generation');
       submitBtn.dataset.mode = 'streaming';
       submitBtn.dataset.phase = 'processing';
       isStreaming = true;
@@ -255,7 +255,7 @@ import { wireArrowUpRecall, getLastUserMessageFromChatHistory } from './composer
       } else {
         var icons = window._odysseusBtnIcons;
         submitBtn.innerHTML = icons ? icons.send : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
-        submitBtn.title = 'Send message';
+        submitBtn.title = window.__('Send message');
         submitBtn.classList.remove('mic-mode', 'newchat-mode');
       }
     }
@@ -370,7 +370,7 @@ import { wireArrowUpRecall, getLastUserMessageFromChatHistory } from './composer
         stoppedIndicator.appendChild(stoppedLabel);
         const continueBtn = document.createElement('button');
         continueBtn.className = 'continue-btn';
-        continueBtn.title = 'Continue';
+        continueBtn.title = window.__('Continue');
         continueBtn.textContent = '\u25B8';
         const _stoppedHolder = currentHolder; // capture before it gets cleared
         continueBtn.addEventListener('click', () => {
@@ -499,10 +499,10 @@ import { wireArrowUpRecall, getLastUserMessageFromChatHistory } from './composer
           el('message').value = '';
           if (uiModule.autoResize) uiModule.autoResize(el('message'));
           addMessage('assistant',
-            'No chat session active. You can:\n\n' +
-            '- Open the model picker in the chat box and pick a model\n' +
-            '- Use the `+` button in the model picker to add a model endpoint\n' +
-            '- Use `/help` to see all available commands');
+            window.__('No chat session active.') + '\n\n' +
+            '- ' + window.__('Open the model picker') + '\n' +
+            '- ' + window.__('Check model status') + '\n' +
+            '- ' + window.__('Configure a provider in Settings'));
           _releaseSendFlag();
           return;
         }
@@ -510,10 +510,10 @@ import { wireArrowUpRecall, getLastUserMessageFromChatHistory } from './composer
         el('message').value = '';
         if (uiModule.autoResize) uiModule.autoResize(el('message'));
         addMessage('assistant',
-          'No chat session active. You can:\n\n' +
-          '- Open the model picker in the chat box and pick a model\n' +
-          '- Use the `+` button in the model picker to add a model endpoint\n' +
-          '- Use `/help` to see all available commands');
+          window.__('No chat session active.') + '\n\n' +
+          '- ' + window.__('Open the model picker') + '\n' +
+          '- ' + window.__('Check model status') + '\n' +
+          '- ' + window.__('Configure a provider in Settings'));
         _releaseSendFlag();
         return;
       }
@@ -521,7 +521,7 @@ import { wireArrowUpRecall, getLastUserMessageFromChatHistory } from './composer
 
     // --- API key guard: warn if message looks like an API key ---
     if (API_KEY_RE.test(msg.trim())) {
-      if (!await window.styledConfirm('This looks like an API key. Sending it to the AI could expose it.\n\nDid you mean to use /setup instead?', { confirmText: 'Send anyway', danger: true })) {
+      if (!await window.styledConfirm(window.__('This looks like an API key...'), { confirmText: window.__('Send anyway'), danger: true })) {
         _releaseSendFlag();
         return;
       }
@@ -2878,8 +2878,8 @@ import { wireArrowUpRecall, getLastUserMessageFromChatHistory } from './composer
           // Timeout-triggered aborts should remain visible instead of disappearing.
           if (timedOut || abortReason === 'timeout') {
             const timeoutMsg = _isAgent
-              ? 'Agent response timed out. Try again, switch to a faster model, or reduce tool usage.'
-              : 'Response timed out. Try again.';
+              ? window.__('Agent response timed out. Try again, switch to a faster model, or reduce tool usage.')
+              : window.__('Response timed out. Try again.');
 
             if (holder && !accumulated) {
               holder.querySelector('.body').innerHTML =
@@ -2896,7 +2896,7 @@ import { wireArrowUpRecall, getLastUserMessageFromChatHistory } from './composer
           }
 
           if (abortReason === 'offline') {
-            const offlineMsg = 'Endpoint offline — switch model or try again.';
+            const offlineMsg = window.__('Endpoint offline — switch model or try again.');
             if (holder && !accumulated) {
               holder.querySelector('.body').innerHTML =
                 `<div style="color: var(--color-error); font-style: italic; padding: 4px 0;">[${offlineMsg}]</div>`;
@@ -2912,7 +2912,7 @@ import { wireArrowUpRecall, getLastUserMessageFromChatHistory } from './composer
           }
 
           if (abortReason === 'recovery') {
-            const recoveryMsg = 'Streaming was interrupted after the tab went inactive. Partial output was preserved.';
+            const recoveryMsg = window.__('Streaming was interrupted after the tab went inactive. Partial output was preserved.');
             if (holder && !accumulated) {
               holder.querySelector('.body').innerHTML =
                 `<div style="color: var(--color-error); font-style: italic; padding: 4px 0;">[${recoveryMsg}]</div>`;

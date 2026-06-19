@@ -1744,7 +1744,93 @@ async function initAgentSettings() {
 /* ═══════════════════════════════════════════
    APPEARANCE TAB
    ═══════════════════════════════════════════ */
+function _translateAppearancePanel() {
+  var __ = window.__ || function(k){ return k; };
+  var panel = modalEl.querySelector('[data-settings-panel="appearance"]');
+  if (!panel) return;
+
+  // Section headers (h2)
+  var headerMap = { 'Sidebar': 'Sidebar', 'Chat Area': 'Chat Area', 'Chat Bar': 'Chat Bar', 'Language': 'Language' };
+  panel.querySelectorAll('h2').forEach(function(h2) {
+    var textNodes = Array.from(h2.childNodes).filter(function(n) { return n.nodeType === 3; });
+    if (textNodes.length > 0) {
+      var t = textNodes[0].textContent.trim();
+      if (headerMap[t]) textNodes[0].textContent = ' ' + __(headerMap[t]) + ' ';
+    }
+  });
+
+  // vis-label spans
+  var labelMap = {
+    'Search': 'Search', 'New Chat': 'New Chat', 'Chats': 'Chats', 'Email': 'Email',
+    'Models': 'Models', 'Tools': 'Tools', 'Brain': 'Brain', 'Calendar': 'Calendar',
+    'Compare': 'Compare', 'Cookbook': 'Cookbook', 'Deep Research': 'Deep Research',
+    'Gallery': 'Gallery', 'Library': 'Library', 'Notes': 'Notes', 'Tasks': 'Tasks',
+    'Theme': 'Theme', 'User': 'User', 'Settings Button': 'Settings Button',
+    'Session Header': 'Session Header', 'Welcome Message': 'Welcome Message',
+    'Incognito Mode': 'Incognito Mode', 'Text-only Emojis': 'Text-only Emojis',
+    'Thinking Process': 'Thinking Process', 'Sensitive Blur': 'Sensitive Blur',
+    'Web Search': 'Web Search', 'Document Editor': 'Document Editor', 'Shell': 'Shell',
+    'More Tools': 'More Tools', 'Agent / Chat': 'Agent / Chat',
+    'Attach Files': 'Attach Files', 'Personas': 'Personas',
+    'Language': 'Language', 'Odysseus': 'Odysseus'
+  };
+  panel.querySelectorAll('.vis-label').forEach(function(el) {
+    var textNodes = Array.from(el.childNodes).filter(function(n) { return n.nodeType === 3; });
+    if (textNodes.length > 0) {
+      var raw = textNodes[0].textContent.replace(/^\s+|\s+$/g, '');
+      if (labelMap[raw]) textNodes[0].textContent = __(raw);
+    }
+  });
+
+  // vis-hint spans
+  var hintMap = {
+    'Brand name': 'Brand name', 'Chat history list': 'Chat history list',
+    'Model selector & quick-chat': 'Model selector & quick-chat',
+    'Whole section (header + all tools)': 'Whole section (header + all tools)',
+    'Avatar & name': 'Avatar & name',
+    'Cog next to user — re-open with /settings': 'Cog next to user — re-open with /settings',
+    'Model name & export above chat': 'Model name & export above chat',
+    'Logo & tips on empty chat': 'Logo & tips on empty chat',
+    'No memory, no history saved': 'No memory, no history saved',
+    'Strip emojis from AI replies': 'Strip emojis from AI replies',
+    'Overflow menu': 'Overflow menu', 'Mode switcher': 'Mode switcher',
+    'Persona picker & system prompt': 'Persona picker & system prompt'
+  };
+  panel.querySelectorAll('.vis-hint').forEach(function(el) {
+    var t = el.textContent.replace(/^\s+|\s+$/g, '');
+    if (hintMap[t]) el.textContent = __(t);
+  });
+
+  // Reset button titles
+  panel.querySelectorAll('[data-vis-reset]').forEach(function(btn) {
+    var card = btn.closest('.admin-card');
+    if (!card) return;
+    var h2 = card.querySelector('h2');
+    var section = '';
+    if (h2) {
+      var tn = Array.from(h2.childNodes).filter(function(n) { return n.nodeType === 3; });
+      if (tn.length > 0) section = tn[0].textContent.trim();
+    }
+    if (section) {
+      btn.title = __('Reset this section to defaults');
+      btn.setAttribute('aria-label', __('Reset') + ' ' + section + ' ' + __('to defaults'));
+    }
+  });
+
+  // Settings modal title & Peek
+  var titleH4 = modalEl.querySelector('.modal-header h4');
+  if (titleH4) {
+    var tNodes = Array.from(titleH4.childNodes).filter(function(n) { return n.nodeType === 3; });
+    if (tNodes.length > 0) tNodes[0].textContent = ' ' + __('Settings') + ' ';
+  }
+  var peekLabel = modalEl.querySelector('.theme-opacity-label');
+  if (peekLabel) peekLabel.textContent = __('Peek');
+  var closeBtn = modalEl.querySelector('.close-btn[aria-label]');
+  if (closeBtn) closeBtn.setAttribute('aria-label', __('Close'));
+}
+
 function initAppearance() {
+  _translateAppearancePanel();
   syncAppearanceCheckboxes();
   syncPrivacyCheckboxes();
 
@@ -1832,6 +1918,35 @@ function syncAppearanceCheckboxes() {
 function syncPrivacyCheckboxes() {
   modalEl.querySelectorAll('[data-privacy-key="sensitive-blur"]').forEach(function(chk) {
     chk.checked = localStorage.getItem('odysseus-sensitive-blur') === 'on';
+  });
+}
+
+/* ═══════════════════════════════════════════
+   LANGUAGE SETTING
+   ═══════════════════════════════════════════ */
+function initLanguageSetting() {
+  var sel = document.getElementById('language-select');
+  if (!sel) return;
+  sel.addEventListener('change', async function() {
+    var locale = sel.value;
+    if (window.setLanguage) await window.setLanguage(locale);
+    // Persist to backend
+    try {
+      await fetch('/api/auth/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ language: locale }),
+      });
+    } catch(e) {
+      console.warn('[i18n] Failed to persist language setting:', e);
+    }
+  });
+  // Sync selector with current locale
+  var cur = (window.getCurrentLocale && window.getCurrentLocale()) || 'en';
+  sel.value = cur;
+  window.addEventListener('language-changed', function(e) {
+    sel.value = e.detail.locale;
   });
 }
 
@@ -2358,6 +2473,10 @@ function initAll() {
   initEmailAccountsSettings();
   initReminderSettings();
   initUnifiedIntegrations();
+  initLanguageSetting();
+  window.addEventListener('language-changed', function() {
+    _translateAppearancePanel();
+  });
 }
 
 function notifyIntegrationsChanged() {

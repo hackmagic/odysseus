@@ -571,7 +571,7 @@ export function el(id) {
  * Styled confirm dialog — replaces native browser confirm().
  * Returns a Promise<boolean>.
  */
-export function styledConfirm(message, { confirmText = 'Confirm', cancelText = 'Cancel', danger = false } = {}) {
+export function styledConfirm(message, { confirmText = window.__('Confirm'), cancelText = window.__('Cancel'), danger = false } = {}) {
   return new Promise(resolve => {
     // Reuse or create the modal
     let overlay = document.getElementById('styled-confirm-overlay');
@@ -581,7 +581,7 @@ export function styledConfirm(message, { confirmText = 'Confirm', cancelText = '
       overlay.className = 'modal';
       overlay.innerHTML =
         '<div class="modal-content styled-confirm-box" role="dialog" aria-modal="true" aria-labelledby="styled-confirm-title" aria-describedby="styled-confirm-msg">' +
-          '<div class="modal-header"><h4 id="styled-confirm-title">Confirm</h4></div>' +
+          '<div class="modal-header"><h4 id="styled-confirm-title">' + window.__('Confirm') + '</h4></div>' +
           '<div class="modal-body"><p id="styled-confirm-msg"></p></div>' +
           '<div class="modal-footer">' +
             '<button id="styled-confirm-cancel"></button>' +
@@ -653,11 +653,11 @@ export function styledConfirm(message, { confirmText = 'Confirm', cancelText = '
  * Resolves to the trimmed string the user typed, or null on Cancel / Escape / backdrop.
  */
 export function styledPrompt(message, {
-  title = 'Name',
+  title = window.__('Name'),
   defaultValue = '',
   placeholder = '',
-  confirmText = 'Save',
-  cancelText = 'Cancel',
+  confirmText = window.__('Save'),
+  cancelText = window.__('Cancel'),
   maxLength = 80,
 } = {}) {
   return new Promise(resolve => {

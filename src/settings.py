@@ -189,6 +189,7 @@ DEFAULT_SETTINGS = {
         "admin_panel": "ctrl+shift+u",
         "cancel": "escape",
     },
+    "language": "en",
 }
 
 DEFAULT_FEATURES = {

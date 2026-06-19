@@ -35,9 +35,9 @@ async function loadUsers() {
   const list = el('adm-userList');
   try {
     const res = await fetch('/api/auth/users', { credentials: 'same-origin' });
-    if (res.status === 401 || res.status === 403) { list.innerHTML = '<div class="admin-empty">Access denied</div>'; return; }
+    if (res.status === 401 || res.status === 403) { list.innerHTML = '<div class="admin-empty">' + window.__('Access denied') + '</div>'; return; }
     const data = await res.json();
-    if (!data.users || data.users.length === 0) { list.innerHTML = '<div class="admin-empty">No users found</div>'; return; }
+    if (!data.users || data.users.length === 0) { list.innerHTML = '<div class="admin-empty">' + window.__('No users found') + '</div>'; return; }
     list.innerHTML = '';
     data.users.forEach(u => {
       const row = document.createElement('div');
