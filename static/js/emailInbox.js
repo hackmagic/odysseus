@@ -15,7 +15,9 @@ const _acct = () => window.__odysseusActiveEmailAccount
   ? `&account_id=${encodeURIComponent(window.__odysseusActiveEmailAccount)}`
   : '';
 
-const _emailSetupHint = () => '<div style="margin-top:6px;opacity:0.72;font-size:11px;">Setup: <span style="color:var(--accent,var(--red));">Settings &rsaquo; Integrations</span></div>';
+const _t = window.__ || function(k){return k};
+
+const _emailSetupHint = () => '<div style="margin-top:6px;opacity:0.72;font-size:11px;">' + _t('Setup') + ': <span style="color:var(--accent,var(--red));">Settings &rsaquo; Integrations</span></div>';
 
 // SVG icons matching sessions.js dropdown style
 const _replyIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>';
@@ -375,13 +377,13 @@ export function folderDisplayName(folder) {
   const raw = String(folder || '');
   const f = raw.toLowerCase();
   if (f === 'inbox') return 'INBOX';
-  if (f.includes('all mail')) return 'Archive / All Mail';
-  if (f.includes('archive')) return 'Archive';
-  if (f.includes('spam')) return 'Spam';
-  if (f.includes('junk')) return 'Junk';
-  if (f.includes('trash') || f.includes('bin') || f.includes('deleted')) return 'Trash';
-  if (f.includes('sent')) return 'Sent';
-  if (f.includes('draft')) return 'Drafts';
+  if (f.includes('all mail')) return _t('Archive / All Mail');
+  if (f.includes('archive')) return _t('Archive');
+  if (f.includes('spam')) return _t('Spam');
+  if (f.includes('junk')) return _t('Junk');
+  if (f.includes('trash') || f.includes('bin') || f.includes('deleted')) return _t('Trash');
+  if (f.includes('sent')) return _t('Sent');
+  if (f.includes('draft')) return _t('Drafts');
   return raw;
 }
 
@@ -429,7 +431,7 @@ function _renderList() {
   if (_emails.length === 0) {
     const empty = document.createElement('div');
     empty.className = 'email-loading';
-    empty.textContent = _senderFilter ? `No emails from ${_senderFilterLabel || _senderFilter}` : 'No emails';
+    empty.textContent = _senderFilter ? _t('No emails from ') + (_senderFilterLabel || _senderFilter) : _t('No emails');
     list.appendChild(empty);
     return;
   }
@@ -671,7 +673,7 @@ async function _openEmail(em, itemEl, preloadedData = null, mode = 'reply', note
       } else {
         let draftToastTimer = null;
         draftToastTimer = setTimeout(() => {
-          import('./ui.js').then(m => m.showToast && m.showToast('Drafting AI reply', { duration: 3000, leadingIcon: 'spinner' })).catch(() => {});
+          import('./ui.js').then(m => m.showToast && m.showToast(_t('Drafting AI reply'), { duration: 3000, leadingIcon: 'spinner' })).catch(() => {});
         }, 450);
         try {
           let currentModel = '';
@@ -921,10 +923,10 @@ function _showEmailMenu(em, anchor, itemEl) {
   dropdown.className = 'dropdown email-dropdown show';
 
   const actions = [
-    { label: 'Open', icon: _replyIcon, action: () => _openEmail(em, itemEl) },
-    { label: 'Remind to reply', icon: _bellIcon, submenu: 'remind' },
-    { label: 'Archive', icon: _archiveIcon, action: () => _archiveEmail(em) },
-    { label: 'Delete', icon: _deleteIcon, danger: true, action: () => _deleteEmail(em) },
+    { label: _t('Open'), icon: _replyIcon, action: () => _openEmail(em, itemEl) },
+    { label: _t('Remind to reply'), icon: _bellIcon, submenu: 'remind' },
+    { label: _t('Archive'), icon: _archiveIcon, action: () => _archiveEmail(em) },
+    { label: _t('Delete'), icon: _deleteIcon, danger: true, action: () => _deleteEmail(em) },
   ];
 
   for (const a of actions) {
@@ -977,9 +979,9 @@ function _showRemindSubmenu(em, parentDropdown) {
   const nextWeek = new Date(now); nextWeek.setDate(now.getDate() + daysUntilMon); nextWeek.setHours(8, 0, 0, 0);
 
   const presets = [
-    { label: 'Later today', sub: laterToday.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), date: laterToday },
-    { label: 'Tomorrow', sub: tomorrow.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), date: tomorrow },
-    { label: 'Next week', sub: nextWeek.toLocaleDateString([], { weekday: 'short' }) + ' ' + nextWeek.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), date: nextWeek },
+    { label: _t('Later today'), sub: laterToday.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), date: laterToday },
+    { label: _t('Tomorrow'), sub: tomorrow.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), date: tomorrow },
+    { label: _t('Next week'), sub: nextWeek.toLocaleDateString([], { weekday: 'short' }) + ' ' + nextWeek.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), date: nextWeek },
   ];
   for (const p of presets) {
     const item = document.createElement('div');
@@ -1065,7 +1067,7 @@ async function _createReplyReminder(em, dueDate) {
     }
   } catch (e) {
     const { showError } = await import('./ui.js');
-    showError('Failed to create reminder');
+    showError(_t('Failed to create reminder'));
   }
 }
 
@@ -1082,7 +1084,7 @@ async function _archiveEmail(em) {
 async function _deleteEmail(em) {
   const subject = em.subject || '(no subject)';
   const { styledConfirm } = await import('./ui.js');
-  const ok = await styledConfirm(`Delete "${subject}"?`, { confirmText: 'Delete', cancelText: 'Cancel', danger: true });
+    const ok = await styledConfirm(_t('Delete') + ' "' + subject + '"?', { confirmText: _t('Delete'), cancelText: _t('Cancel'), danger: true });
   if (!ok) return;
   try {
     await fetch(`${API_BASE}/api/email/delete/${em.uid}?folder=${encodeURIComponent(_currentFolder)}${_acct()}`, { method: 'DELETE' });
@@ -1161,7 +1163,7 @@ async function _composeNew() {
     let sid = '';
     try { sid = sessionModule?.getCurrentSessionId?.() || ''; } catch (_) {}
     if (!sid) {
-      await _createEmailChat({ subject: 'New Email' });
+        await _createEmailChat({ subject: _t('New Email') });
       try { sid = sessionModule?.getCurrentSessionId?.() || ''; } catch (_) {}
     }
     // Guarantee a session — _createEmailChat can't make one when there's no
@@ -1171,7 +1173,7 @@ async function _composeNew() {
     if (!sid) {
       try {
         const _fd = new FormData();
-        _fd.append('name', 'New Email');
+        _fd.append('name', _t('New Email'));
         _fd.append('skip_validation', 'true');
         const _sres = await fetch(`${API_BASE}/api/session`, { method: 'POST', body: _fd, credentials: 'same-origin' });
         if (_sres.ok) {
@@ -1189,7 +1191,7 @@ async function _composeNew() {
     }
     if (!sid) {
       console.error('compose: could not obtain a session_id');
-      import('./ui.js').then(m => m.showError && m.showError('Could not start a new email (no session).')).catch(() => {});
+      import('./ui.js').then(m => m.showError && m.showError(_t('Could not start a new email (no session).'))).catch(() => {});
       return;
     }
     const res = await fetch(`${API_BASE}/api/document`, {
@@ -1197,8 +1199,8 @@ async function _composeNew() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         session_id: sid,
-        title: 'New Email',
-        content: 'To: \nSubject: \n---\n',
+        title: _t('New Email'),
+        content: _t('To: \nSubject: \n---\n'),
         language: 'email',
       }),
     });

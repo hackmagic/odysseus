@@ -69,7 +69,7 @@ function renderResults(data, query) {
 
   if (!data || data.length === 0) {
     container.innerHTML = query
-      ? '<div class="search-empty">No results found</div>'
+      ? '<div class="search-empty">' + (window.__ || function(k){return k})('No results found') + '</div>'
       : '';
     return;
   }
@@ -88,7 +88,8 @@ function renderResults(data, query) {
   for (const [sessionId, group] of Object.entries(grouped)) {
     html += `<div class="search-group-header">${escapeHtml(group.name)}</div>`;
     for (const item of group.items) {
-      const roleLabel = item.role === 'user' ? 'You' : 'AI';
+      const _t = window.__ || function(k){return k};
+      const roleLabel = item.role === 'user' ? _t('You') : _t('AI');
       html += `<div class="search-result-item" data-index="${idx}" data-session="${escapeHtml(sessionId)}">
         <div class="search-result-role">${roleLabel}</div>
         <div class="search-result-snippet">${highlightMatch(item.content_snippet, query)}</div>

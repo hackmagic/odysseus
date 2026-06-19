@@ -75,7 +75,7 @@ async function showModelSelector() {
     header.className = 'modal-header';
 
     const title = document.createElement('h4');
-    title.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M11 18H8a2 2 0 0 1-2-2V9"/></svg>Model Comparison';
+    title.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M11 18H8a2 2 0 0 1-2-2V9"/></svg>' + window.__('Model Comparison');
     // Absorb the free space so the injected minimize (_) and close (✕) cluster
     // together on the right instead of being spread apart by space-between.
     title.style.marginRight = 'auto';
@@ -91,7 +91,7 @@ async function showModelSelector() {
     const headerMinBtn = document.createElement('button');
     headerMinBtn.type = 'button';
     headerMinBtn.className = 'modal-minimize-btn minimize-btn';
-    headerMinBtn.title = 'Minimize';
+    headerMinBtn.title = window.__('Minimize');
     headerMinBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="18" x2="19" y2="18"/></svg>';
     headerMinBtn.style.margin = '0';
 
@@ -116,12 +116,12 @@ async function showModelSelector() {
     const blindBtn = document.createElement('button');
     blindBtn.type = 'button';
     blindBtn.className = 'compare-blind-toggle active';
-    blindBtn.title = 'Blind Mode — hide model names until you vote';
-    blindBtn.innerHTML = EYE_CLOSED + _toggleLabel('Blind');
+    blindBtn.title = window.__('Blind Mode — hide model names until you vote');
+    blindBtn.innerHTML = EYE_CLOSED + _toggleLabel(window.__('Blind'));
     blindBtn.addEventListener('click', () => {
       state._blindMode = !state._blindMode;
       blindBtn.classList.toggle('active', state._blindMode);
-      blindBtn.innerHTML = (state._blindMode ? EYE_CLOSED : EYE_OPEN) + _toggleLabel('Blind');
+      blindBtn.innerHTML = (state._blindMode ? EYE_CLOSED : EYE_OPEN) + _toggleLabel(window.__('Blind'));
       // Turning off blind mode reveals shuffled models
       if (!state._blindMode && _shuffled) {
         _shuffled = false;
@@ -129,11 +129,11 @@ async function showModelSelector() {
       }
       renderModelRows();
       // Mobile hides the button labels — surface the new state as a toast.
-      uiModule.showToast('Mode: Blind ' + (state._blindMode ? 'on' : 'off'));
+      uiModule.showToast(window.__('Mode: Blind ') + (state._blindMode ? window.__('on') : window.__('off')));
       _updateModeLabel();
       _setModeHint(state._blindMode
-        ? '<span style="color:var(--color-blind-orange)">Blind mode</span>: model names stay hidden until you vote.'
-        : '<span style="color:var(--color-blind-orange)">Blind mode off</span>: model names are shown.');
+        ? '<span style="color:var(--color-blind-orange)">' + window.__('Blind mode') + '</span>: ' + window.__('model names stay hidden until you vote.')
+        : '<span style="color:var(--color-blind-orange)">' + window.__('Blind mode off') + '</span>: ' + window.__('model names are shown.'));
     });
     toggleRow.appendChild(blindBtn);
 
@@ -142,19 +142,19 @@ async function showModelSelector() {
     const parallelBtn = document.createElement('button');
     parallelBtn.type = 'button';
     parallelBtn.className = 'compare-parallel-toggle active';
-    parallelBtn.title = 'Parallel — run all models at once vs one at a time';
-    parallelBtn.innerHTML = ICON_PARALLEL + _toggleLabel('Parallel');
+    parallelBtn.title = window.__('Parallel — run all models at once vs one at a time');
+    parallelBtn.innerHTML = ICON_PARALLEL + _toggleLabel(window.__('Parallel'));
     parallelBtn.addEventListener('click', () => {
       state._parallel = !state._parallel;
       parallelBtn.classList.toggle('active', state._parallel);
-      parallelBtn.innerHTML = (state._parallel ? ICON_PARALLEL : ICON_SEQUENTIAL) + _toggleLabel(state._parallel ? 'Parallel' : 'Sequential');
-      parallelBtn.title = state._parallel ? 'Switch to one at a time' : 'Run side by side';
+      parallelBtn.innerHTML = (state._parallel ? ICON_PARALLEL : ICON_SEQUENTIAL) + _toggleLabel(state._parallel ? window.__('Parallel') : window.__('Sequential'));
+      parallelBtn.title = state._parallel ? window.__('Switch to one at a time') : window.__('Run side by side');
       renderModelRows();
-      uiModule.showToast('Mode: ' + (state._parallel ? 'Parallel' : 'Sequential'));
+      uiModule.showToast(window.__('Mode: ') + (state._parallel ? window.__('Parallel') : window.__('Sequential')));
       _updateModeLabel();
       _setModeHint(state._parallel
-        ? '<span style="color:#5b8def">Parallel</span>: all models answer at once, side by side.'
-        : '<span style="color:#e0a050">Sequential</span>: models answer one at a time.');
+        ? '<span style="color:#5b8def">' + window.__('Parallel') + '</span>: ' + window.__('all models answer at once, side by side.')
+        : '<span style="color:#e0a050">' + window.__('Sequential') + '</span>: ' + window.__('models answer one at a time.'));
     });
     toggleRow.appendChild(parallelBtn);
 
@@ -162,8 +162,8 @@ async function showModelSelector() {
     const diceBtn = document.createElement('button');
     diceBtn.type = 'button';
     diceBtn.className = 'compare-dice-toggle';
-    diceBtn.title = 'Shuffle — randomly pick models for each slot';
-    diceBtn.innerHTML = ICON_DICE + _toggleLabel('Shuffle');
+    diceBtn.title = window.__('Shuffle — randomly pick models for each slot');
+    diceBtn.innerHTML = ICON_DICE + _toggleLabel(window.__('Shuffle'));
     diceBtn.addEventListener('click', () => {
       if (!_modelsLoaded) return;
       // Toggle off if already shuffled
@@ -171,9 +171,9 @@ async function showModelSelector() {
         _shuffled = false;
         diceBtn.classList.remove('active');
         renderModelRows();
-        uiModule.showToast('Mode: Shuffle off');
+        uiModule.showToast(window.__('Mode: Shuffle off'));
         _updateModeLabel();
-        _setModeHint('<span style="color:var(--red)">Shuffle off</span>: choose the models yourself.');
+        _setModeHint('<span style="color:var(--red)">' + window.__('Shuffle off') + '</span>: ' + window.__('choose the models yourself.'));
         return;
       }
       // Randomly pick models from filtered list for each slot
@@ -193,12 +193,12 @@ async function showModelSelector() {
       if (!state._blindMode) {
         state._blindMode = true;
         blindBtn.classList.add('active');
-        blindBtn.innerHTML = EYE_CLOSED + _toggleLabel('Blind');
+        blindBtn.innerHTML = EYE_CLOSED + _toggleLabel(window.__('Blind'));
       }
       renderModelRows();
-      uiModule.showToast(state._blindMode ? 'Mode: Shuffle on · Blind on' : 'Mode: Shuffle on');
+      uiModule.showToast(state._blindMode ? window.__('Mode: Shuffle on · Blind on') : window.__('Mode: Shuffle on'));
       _updateModeLabel();
-      _setModeHint('<span style="color:var(--red)">Shuffle</span>: random models picked for each slot (auto-hidden).');
+      _setModeHint('<span style="color:var(--red)">' + window.__('Shuffle') + '</span>: ' + window.__('random models picked for each slot (auto-hidden).'));
       // Show active state + spin only the dice icon
       diceBtn.classList.add('active');
       const diceSvg = diceBtn.querySelector('svg');
@@ -220,16 +220,16 @@ async function showModelSelector() {
     const saveBtn = document.createElement('button');
     saveBtn.type = 'button';
     saveBtn.className = 'compare-save-toggle';
-    saveBtn.title = 'Save — keep sessions after closing compare';
-    saveBtn.innerHTML = SAVE_ICON + _toggleLabel('Save');
+    saveBtn.title = window.__('Save — keep sessions after closing compare');
+    saveBtn.innerHTML = SAVE_ICON + _toggleLabel(window.__('Save'));
     saveBtn.addEventListener('click', () => {
       state._saveOnClose = !state._saveOnClose;
       saveBtn.classList.toggle('active', state._saveOnClose);
-      uiModule.showToast('Mode: Save ' + (state._saveOnClose ? 'on' : 'off'));
+      uiModule.showToast(window.__('Mode: Save ') + (state._saveOnClose ? window.__('on') : window.__('off')));
       _updateModeLabel();
       _setModeHint(state._saveOnClose
-        ? '<span style="color:var(--color-save-green)">Save</span>: keep these sessions after you close Compare.'
-        : '<span style="color:var(--color-save-green)">Save off</span>: sessions are discarded when you close Compare.');
+        ? '<span style="color:var(--color-save-green)">' + window.__('Save') + '</span>: ' + window.__('keep these sessions after you close Compare.')
+        : '<span style="color:var(--color-save-green)">' + window.__('Save off') + '</span>: ' + window.__('sessions are discarded when you close Compare.'));
     });
     toggleRow.appendChild(saveBtn);
 
@@ -237,12 +237,12 @@ async function showModelSelector() {
     const resetBtn = document.createElement('button');
     resetBtn.type = 'button';
     resetBtn.className = 'compare-reset-toggle';
-    resetBtn.title = 'Reset — restore all defaults';
-    resetBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>' + _toggleLabel('Reset');
+    resetBtn.title = window.__('Reset — restore all defaults');
+    resetBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>' + _toggleLabel(window.__('Reset'));
     resetBtn.addEventListener('click', () => {
       state._blindMode = true;
       blindBtn.classList.add('active');
-      blindBtn.innerHTML = EYE_CLOSED + _toggleLabel('Blind');
+      blindBtn.innerHTML = EYE_CLOSED + _toggleLabel(window.__('Blind'));
       _shuffled = false;
       diceBtn.classList.remove('active');
       state._continueChat = false;
@@ -267,7 +267,7 @@ async function showModelSelector() {
 
     const desc = document.createElement('p');
     desc.style.cssText = 'color:color-mix(in srgb, var(--fg) 55%, transparent);font-size:0.85em;margin:0 0 12px;';
-    desc.textContent = 'Select models to compare side-by-side. Send the same prompt to all.';
+    desc.textContent = window.__('Select models to compare side-by-side. Send the same prompt to all.');
     body.appendChild(desc);
 
     // Options row
@@ -278,7 +278,7 @@ async function showModelSelector() {
     modeLabel.className = 'compare-section-label';
     // The active modes (+colors) are appended in a span shown only on mobile,
     // where the toggle text labels are hidden so the icons alone are ambiguous.
-    modeLabel.innerHTML = 'Mode: <span class="compare-mode-current"></span>';
+    modeLabel.innerHTML = window.__('Mode:') + ' <span class="compare-mode-current"></span>';
     modeWrap.appendChild(modeLabel);
     modeWrap.appendChild(toggleRow);
     // Contextual one-liner describing the mode you just toggled.
@@ -293,12 +293,12 @@ async function showModelSelector() {
       const cur = modeLabel.querySelector('.compare-mode-current');
       if (!cur) return;
       const parts = [];
-      if (state._blindMode) parts.push('<span style="color:var(--color-blind-orange)">Blind</span>');
+      if (state._blindMode) parts.push('<span style="color:var(--color-blind-orange)">' + window.__('Blind') + '</span>');
       parts.push(state._parallel
-        ? '<span style="color:#5b8def">Parallel</span>'
-        : '<span style="color:#e0a050">Sequential</span>');
-      if (_shuffled) parts.push('<span style="color:var(--red)">Shuffle</span>');
-      if (state._saveOnClose) parts.push('<span style="color:var(--color-save-green)">Save</span>');
+        ? '<span style="color:#5b8def">' + window.__('Parallel') + '</span>'
+        : '<span style="color:#e0a050">' + window.__('Sequential') + '</span>');
+      if (_shuffled) parts.push('<span style="color:var(--red)">' + window.__('Shuffle') + '</span>');
+      if (state._saveOnClose) parts.push('<span style="color:var(--color-save-green)">' + window.__('Save') + '</span>');
       cur.innerHTML = parts.join(', ');
     }
 
@@ -310,7 +310,7 @@ async function showModelSelector() {
     typeLabel.className = 'compare-section-label';
     // The active type name (+icon) is appended in a span shown only on mobile,
     // where the tab text labels are hidden so the icons alone are ambiguous.
-    typeLabel.innerHTML = 'Type: <span class="compare-type-current"></span>';
+    typeLabel.innerHTML = window.__('Type:') + ' <span class="compare-type-current"></span>';
     typeWrap.appendChild(typeLabel);
     const tabBar = document.createElement('div');
     tabBar.className = 'compare-mode-tabs compare-type-tabs';
@@ -320,10 +320,10 @@ async function showModelSelector() {
     // Research — magnifying glass with `+` (matches the sidebar Deep Research icon)
     const _ICON_RESEARCH = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>';
     const _modes = [
-      { id: 'chat', label: 'Chat', icon: CHAT_ICON },
-      { id: 'agent', label: 'Agent', icon: _ICON_AGENT },
-      { id: 'search', label: 'Search', icon: _ICON_SEARCH },
-      { id: 'research', label: 'Research', icon: _ICON_RESEARCH },
+      { id: 'chat', label: window.__('Chat'), icon: CHAT_ICON },
+      { id: 'agent', label: window.__('Agent'), icon: _ICON_AGENT },
+      { id: 'search', label: window.__('Search'), icon: _ICON_SEARCH },
+      { id: 'research', label: window.__('Research'), icon: _ICON_RESEARCH },
     ];
     _modes.forEach(m => {
       const tab = document.createElement('button');
@@ -366,7 +366,7 @@ async function showModelSelector() {
       } else {
         state._parallel = true;
         parallelBtn.classList.add('active');
-        parallelBtn.innerHTML = ICON_PARALLEL + _toggleLabel('Parallel');
+      parallelBtn.innerHTML = ICON_PARALLEL + _toggleLabel(window.__('Parallel'));
       }
       // Restore saved selections for this tab, or default
       selections = _tabSelections[mode] ? _tabSelections[mode].slice() : [null, null];
@@ -384,11 +384,11 @@ async function showModelSelector() {
     const _loadingDiv = document.createElement('div');
     _loadingDiv.style.cssText = 'color:color-mix(in srgb, var(--fg) 40%, transparent);font-size:0.85em;padding:12px 0;text-align:left;';
     if (spinnerModule) {
-      const _loadSpinner = spinnerModule.create('Loading models', 'right');
+        const _loadSpinner = spinnerModule.create(window.__('Loading models'), 'right');
       _loadingDiv.appendChild(_loadSpinner.createElement());
       _loadSpinner.start();
     } else {
-      _loadingDiv.textContent = 'Loading models\u2026';
+      _loadingDiv.textContent = window.__('Loading models...');
     }
     listContainer.appendChild(_loadingDiv);
 
@@ -426,7 +426,7 @@ async function showModelSelector() {
 
       const input = document.createElement('input');
       input.type = 'text';
-      input.placeholder = 'Search models\u2026';
+      input.placeholder = window.__('Search models...');
       input.className = 'cmp-form-control';
       input.style.cssText = 'width:100%;box-sizing:border-box;';
       // Mobile: suppress the on-screen keyboard so tapping the picker
@@ -465,7 +465,7 @@ async function showModelSelector() {
         if (matches.length === 0) {
           const empty = document.createElement('div');
           empty.style.cssText = 'padding:8px 12px;color:color-mix(in srgb, var(--fg) 40%, transparent);font-size:0.82em;font-style:italic;';
-          empty.textContent = 'No matches';
+          empty.textContent = window.__('No matches');
           dropdown.appendChild(empty);
           return;
         }
@@ -569,18 +569,18 @@ async function showModelSelector() {
       if (state._compareMode === 'search') {
         listContainer.innerHTML = '';
         if (!state._cachedProviders) {
-          listContainer.innerHTML = '<div style="color:color-mix(in srgb, var(--fg) 40%, transparent);font-size:0.85em;padding:12px 0;text-align:left;">Loading search providers\u2026</div>';
+          listContainer.innerHTML = '<div style="color:color-mix(in srgb, var(--fg) 40%, transparent);font-size:0.85em;padding:12px 0;text-align:left;">' + window.__('Loading search providers...') + '</div>';
           fetch(`${state.API_BASE}/api/search/providers`).then(r => r.json()).then(providers => {
             state._cachedProviders = providers;
             renderModelRows();
           }).catch(() => {
-            listContainer.innerHTML = '<div style="color:var(--color-error);font-size:0.85em;padding:12px 0;">Failed to load search providers</div>';
+            listContainer.innerHTML = '<div style="color:var(--color-error);font-size:0.85em;padding:12px 0;">' + window.__('Failed to load search providers') + '</div>';
           });
           return;
         }
         const available = state._cachedProviders.filter(p => p.available);
         if (available.length === 0) {
-          listContainer.innerHTML = '<div style="color:color-mix(in srgb, var(--fg) 40%, transparent);font-size:0.85em;padding:12px 0;text-align:center;font-style:italic;">No search providers configured</div>';
+          listContainer.innerHTML = '<div style="color:color-mix(in srgb, var(--fg) 40%, transparent);font-size:0.85em;padding:12px 0;text-align:center;font-style:italic;">' + window.__('No search providers configured') + '</div>';
           if (addBtn) addBtn.style.display = 'none';
           return;
         }
@@ -676,7 +676,7 @@ async function showModelSelector() {
       // Research mode needs search providers too — fetch if not cached
       const needsProviders = state._compareMode === 'research';
       if (needsProviders && !state._cachedProviders) {
-        listContainer.innerHTML = '<div style="color:color-mix(in srgb, var(--fg) 40%, transparent);font-size:0.85em;padding:12px 0;">Loading search providers\u2026</div>';
+        listContainer.innerHTML = '<div style="color:color-mix(in srgb, var(--fg) 40%, transparent);font-size:0.85em;padding:12px 0;">' + window.__('Loading search providers...') + '</div>';
         fetch(`${state.API_BASE}/api/search/providers`).then(r => r.json()).then(providers => {
           state._cachedProviders = providers;
           renderModelRows();
@@ -690,7 +690,7 @@ async function showModelSelector() {
       if (filtered.length === 0) {
         const empty = document.createElement('div');
         empty.style.cssText = 'color:color-mix(in srgb, var(--fg) 40%, transparent);font-size:0.85em;padding:12px 0;text-align:center;font-style:italic;';
-        empty.textContent = 'No ' + state._compareMode + ' models available';
+        empty.textContent = window.__('No ') + state._compareMode + window.__(' models available');
         listContainer.appendChild(empty);
         if (addBtn) addBtn.style.display = 'none';
         return;
@@ -721,7 +721,7 @@ async function showModelSelector() {
           const mask = document.createElement('div');
           mask.className = 'cmp-form-control';
           mask.style.cssText = 'flex:1;opacity:0.4;font-style:italic;';
-          mask.textContent = 'Hidden';
+          mask.textContent = window.__('Hidden');
           row.appendChild(mask);
         } else if (filtered.length >= 5) {
           const picker = _buildSearchablePicker(filtered, sel, idx, (chosen) => {
@@ -758,7 +758,7 @@ async function showModelSelector() {
         if (needsProviders && researchProviders.length > 0 && !_shuffled) {
           const provSelect = document.createElement('select');
           provSelect.className = 'cmp-form-control cmp-prov-select';
-          provSelect.title = 'Search provider';
+          provSelect.title = window.__('Search provider');
           researchProviders.forEach((p, pi) => {
             const optEl = document.createElement('option');
             optEl.value = p.id;
@@ -795,7 +795,7 @@ async function showModelSelector() {
     addBtn = document.createElement('button');
     addBtn.type = 'button';
     addBtn.style.cssText = 'display:none;align-items:center;gap:6px;background:none;border:1px dashed var(--border);color:var(--fg);border-radius:6px;cursor:pointer;padding:6px 12px;font-size:0.82em;opacity:0.6;transition:all 0.15s;margin-bottom:16px;width:100%;justify-content:center;';
-    addBtn.textContent = '+ Add Model';
+    addBtn.textContent = '+ ' + window.__('Add Model');
     addBtn.addEventListener('mouseenter', () => { addBtn.style.opacity = '1'; });
     addBtn.addEventListener('mouseleave', () => { addBtn.style.opacity = '0.6'; });
     addBtn.addEventListener('click', () => {
@@ -823,7 +823,7 @@ async function showModelSelector() {
     timeoutRow.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:8px;';
     const timeoutLabel = document.createElement('span');
     timeoutLabel.style.cssText = 'color:color-mix(in srgb, var(--fg) 55%, transparent);font-size:0.82em;';
-    timeoutLabel.textContent = 'Timeout:';
+    timeoutLabel.textContent = window.__('Timeout:');
     const timeoutInput = document.createElement('input');
     timeoutInput.type = 'number';
     timeoutInput.min = '5';
@@ -832,7 +832,7 @@ async function showModelSelector() {
     timeoutInput.style.cssText = 'width:60px;padding:4px 8px;background:var(--bg);color:var(--fg);border:1px solid var(--border);border-radius:4px;font-size:0.82em;text-align:center;-moz-appearance:textfield;';
     const timeoutSuffix = document.createElement('span');
     timeoutSuffix.style.cssText = 'color:color-mix(in srgb, var(--fg) 55%, transparent);font-size:0.82em;';
-    timeoutSuffix.textContent = 'seconds';
+    timeoutSuffix.textContent = window.__('seconds');
     timeoutRow.appendChild(timeoutLabel);
     timeoutRow.appendChild(timeoutInput);
     timeoutRow.appendChild(timeoutSuffix);
@@ -840,7 +840,7 @@ async function showModelSelector() {
     // Scoreboard button
     const scoreBtn = document.createElement('button');
     scoreBtn.type = 'button';
-    scoreBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:4px;"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Scoreboard';
+    scoreBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:4px;"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>' + window.__('Scoreboard');
     scoreBtn.style.cssText = 'margin-left:auto;padding:4px 10px;background:transparent;color:var(--fg);border:1px solid var(--border);border-radius:4px;cursor:pointer;font-size:0.82em;opacity:0.7;position:relative;top:-5px;';
     scoreBtn.addEventListener('mouseenter', () => { scoreBtn.style.opacity = '1'; });
     scoreBtn.addEventListener('mouseleave', () => { scoreBtn.style.opacity = '0.7'; });
@@ -924,7 +924,7 @@ async function showModelSelector() {
       probeOverlay.className = 'compare-probe-overlay';
       const probeCard = document.createElement('div');
       probeCard.className = 'compare-probe-card';
-      probeCard.innerHTML = '<div class="compare-probe-title">Checking models...</div>';
+      probeCard.innerHTML = '<div class="compare-probe-title">' + window.__('Checking models...') + '</div>';
       let _probeSkipped = false;
       const probeList = document.createElement('div');
       probeList.className = 'compare-probe-list';
@@ -935,7 +935,7 @@ async function showModelSelector() {
         row.dataset.idx = i;
         // In blind mode, hide name until failure — only show slot letter
         const name = m.name || m.model.split('/').pop();
-        const displayName = isBlind ? `Model ${_slotChar(i)}` : escapeHtml(name);
+        const displayName = isBlind ? window.__('Model ') + _slotChar(i) : escapeHtml(name);
         row._realName = name;
         row.innerHTML = `<span class="compare-probe-spinner">▁▂▃</span><span class="compare-probe-name">${displayName}</span><span class="compare-probe-status"></span>`;
         const waveEl = row.querySelector('.compare-probe-spinner');
@@ -951,7 +951,7 @@ async function showModelSelector() {
       });
       probeCard.appendChild(probeList);
       const skipBtn = document.createElement('button');
-      skipBtn.textContent = 'Skip';
+      skipBtn.textContent = window.__('Skip');
       skipBtn.className = 'cmp-btn-secondary';
       skipBtn.style.cssText = 'padding:4px 14px;font-size:11px;opacity:0.5;transition:opacity 0.15s;margin-top:8px;';
       skipBtn.addEventListener('mouseenter', () => { skipBtn.style.opacity = '1'; });

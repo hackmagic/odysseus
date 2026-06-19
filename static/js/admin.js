@@ -1780,7 +1780,7 @@ async function loadBuiltinTools() {
     const res = await fetch('/api/tools', { credentials: 'same-origin' });
     const data = await res.json();
     const tools = data.tools || [];
-    if (!tools.length) { list.innerHTML = '<div class="admin-empty">No tools found</div>'; return; }
+    if (!tools.length) { list.innerHTML = '<div class="admin-empty">' + (window.__ || function(k){return k})('No tools found') + '</div>'; return; }
 
     // Group by category
     const groups = {};
@@ -1801,9 +1801,10 @@ async function loadBuiltinTools() {
       const totalCount = items.length;
       const catId = 'tool-cat-' + cat.replace(/[^a-zA-Z]/g, '');
       const allEnabled = enabledCount === totalCount;
+      const _tw = window.__ || function(k){return k};
       html += `<div class="admin-tool-category">
         <div class="admin-tool-cat-header" data-tool-cat="${catId}" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;">
-          <span>${esc(cat)}</span>
+          <span>${esc(_tw(cat))}</span>
           <span style="display:flex;align-items:center;gap:6px;" class="admin-tool-cat-right">
             <span class="admin-tool-cat-count" style="font-size:10px;opacity:0.5;">${enabledCount}/${totalCount}</span>
             <label class="admin-switch" style="flex-shrink:0;">
@@ -1818,10 +1819,10 @@ async function loadBuiltinTools() {
         html += `
         <div class="admin-tool-row">
           <div class="admin-tool-info">
-            <span class="admin-tool-name">${esc(t.name)}</span>
-            <span class="admin-tool-desc">${esc(t.desc)}</span>
+            <span class="admin-tool-name">${esc(_tw(t.name))}</span>
+            <span class="admin-tool-desc">${esc(_tw(t.desc))}</span>
           </div>
-          <span class="admin-tool-ctx" title="Approximate context tokens used">${esc(t.ctx)}</span>
+          <span class="admin-tool-ctx" title="${_tw('Approximate context tokens used')}">${esc(t.ctx)}</span>
           <label class="admin-switch" style="flex-shrink:0;">
             <input type="checkbox" data-tool-id="${esc(t.id)}" ${t.enabled ? 'checked' : ''}>
             <span class="admin-slider"></span>
@@ -2411,7 +2412,7 @@ async function loadTokens() {
     // Revoke
     list.querySelectorAll('[data-adm-del-token]').forEach(btn => {
       btn.addEventListener('click', async () => {
-        if (!await uiModule.styledConfirm('Revoke this API token? External integrations using it will stop working.', { confirmText: 'Revoke', danger: true })) return;
+        if (!await uiModule.styledConfirm((window.__ || function(k){return k})('Revoke this API token? External integrations using it will stop working.'), { confirmText: (window.__ || function(k){return k})('Revoke'), danger: true })) return;
         await fetch(`/api/tokens/${btn.dataset.admDelToken}`, { method: 'DELETE', credentials: 'same-origin' });
         loadTokens();
         // Codex / Claude integration cards on the Integrations panel are
