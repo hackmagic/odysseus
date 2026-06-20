@@ -394,6 +394,21 @@ Key settings:
 
 All upload-limit vars are validated (must be a positive integer) and optional; an invalid value fails fast at startup.
 
+### Internationalization (UI Language)
+
+Odysseus includes a lightweight client-side i18n framework for runtime UI language switching:
+
+- **Default language**: English (`en`)
+- **Currently supported**: Chinese Simplified (`zh-CN`)
+- **Auto-detection**: on first visit, the UI picks your browser's language setting
+- **Persistence**: language preference is saved in `localStorage` and synced to the backend
+
+**To change the language**: open **Settings → Appearance → Language** and select your locale from the dropdown. The UI updates immediately without a page reload. The choice persists across sessions.
+
+**Server-side default**: the initial language is `"en"` in `data/settings.json` (`language` key). To pre-set a different default before first boot, write the key manually or set it via the Settings panel.
+
+**Adding a new locale**: create a JSON translation file at `static/i18n/{locale}.json` where each key is an English UI string and the value is its translation. The framework loads it at runtime — no build step or server restart required. See the existing `static/i18n/zh-CN.json` for the complete format reference. Pull requests for new locales are welcome.
+
 ### Built-in MCP servers (optional setup)
 
 Odysseus auto-registers a few built-in MCP servers at startup. The npx-based ones (currently the browser server, `@playwright/mcp`) only start when their npm package is already in the local npx cache. If a package isn't cached, that server is skipped with a startup log message explaining what to do, so a fresh install does not block on a multi-minute npm download or hang if Playwright system deps are missing.

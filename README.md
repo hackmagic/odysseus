@@ -48,6 +48,22 @@ Native installs, GPU notes, Windows/macOS instructions, HTTPS, and configuration
 - **Email** — IMAP/SMTP inbox with triage, tags, summaries, reminders, and reply drafts.
 - **Notes, Tasks + Calendar** — reminders, todos, scheduled agent tasks, and CalDAV sync.
 - **Extras** — gallery/image editor, themes, uploads, web search, presets, sessions, and 2FA.
+- **Internationalization (i18n)** — UI language switching with `data-i18n` framework; currently supports English and Chinese (zh-CN). Easily extensible — add a JSON translation file to contribute a new locale.
+
+## Internationalization
+
+Odysseus supports runtime UI language switching through a lightweight client-side i18n framework:
+
+- **Default language**: English (`en`)
+- **Supported locales**: Chinese Simplified (`zh-CN`)
+- **Auto-detection**: picks your browser language on first visit
+- **Persistence**: language preference is saved in localStorage and synced to the backend
+
+**To switch language**: open **Settings → Appearance → Language** and select your locale from the dropdown. The UI updates immediately without a page reload.
+
+**To add a new locale**: create a JSON translation file at `static/i18n/{locale}.json` mapping each UI string key to its translated value. The i18n engine loads it at runtime — no build step required. See `static/i18n/zh-CN.json` for the format.
+
+Language preference is also stored server-side in `data/settings.json` (`language` key) and takes precedence on subsequent logins.
 
 ## Demo
 
